@@ -258,18 +258,43 @@ class Disparity_Smooth():
                 primary_pixel_h, primary_pixel_v = matrix_master[c][r][0], matrix_master[c][r][1]
                 main_pixel = img[primary_pixel_h, primary_pixel_v]
                 difference = secondary_pixel - main_pixel
-                v_diff.append(difference)
+                v_diff.append(difference) 
         return v_diff
 
-    def h_intensity_diff(self, matrix_master, height_list, width_list, h_end_point_list):
-        pass
+    def horizontal_term_x(self, h_diff, height_list, width_list, h_intensity_diff):
+        #take h_diff(n,n) * e^-I(n,n)
+        h_total = []
+        for c in height_list:
+            for r in width_list:
+                pixel_total = float(h_diff[c][r] * math.e ** h_intensity_diff[c][r])
+                h_total.append(pixel_total)
+        return h_total
 
-    def horizontal_term_x(self, matrix_master, h_diff, height_list, width_list):
-        #take h_diff(n,n) x e^-I(n,n)
-        pass
+    def vertical_term_y(self, v_diff, height_list, width_list, v_intensity_diff):
+        v_total = []
+        for r in width_list:
+            for c in height_list:
+                pixel_total = float(v_diff[c][r] * math.e ** v_intensity_diff[c][r])
+                v_total.append(pixel_total)
+        return v_total
+    
+    def horizontal_total_sum(h_total, height_list, width_list):
+        h_total = float
+        for c in height_list:
+            for r in width_list:
+                h_total = h_total + h_total[c][r]
+        return h_total
 
-    def vertical_term_y(self):
-        pass
+    def vertical_total_sum(v_total, height_list, width_list):
+        v_total = float
+        for r in width_list:
+            for c in height_list:
+                v_total = v_total + v_total[c][r]
+        return v_total
+
+    def loss_calc(self, h_total, v_total):
+        loss = sum(h_total + v_total)
+        return loss
 
     def calculate(self):
         img, shape = self.read_image()
@@ -280,3 +305,15 @@ class Disparity_Smooth():
         h_diff = self.horizontal_diff(img, matrix_master, height_list, width_list, h_end_point_list)
         v_end_point_list = self.v_end_pixel_list(matrix_master)
         v_diff = self.vertical_diff(img, matrix_master, height_list, width_list, v_end_point_list)
+        h_intensity_diff = h_diff
+        v_intensity_diff = v_diff
+        h_total = self.horizontal_term_x(h_diff, height_list, width_list, h_intensity_diff)
+        v_total = self.vertical_term_y(v_diff, height_list, width_list, v_intensity_diff)
+        horizontal_total_sum = self.horizontal_total_sum(h_total, height_list, width_list)
+        vertical_total_sum = self.vertical_total_sum(v_total, height_list, width_list)
+        loss = self.loss_calc(self, horizontal_total_sum, vertical_total_sum)
+
+        print(loss)
+
+if __name__ == "__main__":
+    Disparity_Smooth().calculate()
