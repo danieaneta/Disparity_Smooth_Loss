@@ -164,12 +164,12 @@ def test_horizontal_term_x_run():
 
 def test_horizontal_term_x():
     h_total = Disparity_Smooth(IMG_PATH).horizontal_term_x(h_diff, height_list, h_intensity_diff)
-    assert type(h_total) == list
-    assert type(h_total[0]) == numpy.float64
+    assert type(h_total) == numpy.float64
 
 h_total = Disparity_Smooth(IMG_PATH).horizontal_term_x(h_diff, height_list, h_intensity_diff)
 print("H_TOTAL: ", h_total)
-print("H_TOTAL_TYPE: ", type(h_total[0]))
+print("H_TOTAL_TYPE: ", type(h_total))
+
 #------------------------------
 #vertical_term_x
 #------------------------------
@@ -180,29 +180,25 @@ def test_vertical_term_y_run():
 
 def test_vertical_term_y():
     v_total = Disparity_Smooth(IMG_PATH).vertical_term_y(v_diff,width_list, v_intensity_diff)
-    assert type(v_total) == list
-    assert type(v_total[0]) == numpy.float64
+    assert type(v_total) == numpy.float64
 
 v_total = Disparity_Smooth(IMG_PATH).vertical_term_y(v_diff, width_list, v_intensity_diff)
 print("V_TOTAL: ", v_total)
+print("V_TOTAL_TYPE: ", type(v_total))
 
 #------------------------------
-#horizontal_total_sum
+#loss_calc
 #------------------------------
 
-# def test_horizontal_total_sum_run(): 
-#     Disparity_Smooth(IMG_PATH).horizontal_total_sum(h_total, height_list, width_list)
-#     assert True
+def test_loss_calc_run():
+    Disparity_Smooth(IMG_PATH).loss_calc(h_total, v_total)
+    assert True
 
-h_total_sum = Disparity_Smooth(IMG_PATH).horizontal_total_sum(5, 5, 5)
-print(h_total_sum)
-print(type(h_total_sum))
+def test_loss_calc():
+    loss = Disparity_Smooth(IMG_PATH).loss_calc(h_total, v_total)
+    assert type(loss) == numpy.float64
 
-# def test_horizontal_total_sum():
-#     horizontal_total_sum = Disparity_Smooth(IMG_PATH).horizontal_total_sum(h_total, height_list, width_list)
-#     assert type(horizontal_total_sum) == float
-
-# horizontal_total_sum = Disparity_Smooth(IMG_PATH).horizontal_total_sum(h_total, height_list, width_list)
-# print("HORIZONTAL_TOTAL_SUM: ", horizontal_total_sum)
+loss = Disparity_Smooth(IMG_PATH).loss_calc(h_total, v_total)
+print("LOSS: ", loss)
 
 print("----UNIT TEST END----")

@@ -90,39 +90,24 @@ class Disparity_Smooth():
 
     def horizontal_term_x(self, h_diff, height_list, h_intensity_diff):
         #take h_diff(n,n) * e^-I(n,n)
-
         h_total = []
         for c in height_list:
             pixel_total = h_diff[c] * math.e ** h_intensity_diff[c]
             h_total.append(pixel_total)
-
+        h_total = sum(h_total)
         return h_total
 
     def vertical_term_y(self, v_diff, width_list, v_intensity_diff):
         v_total = []
-
         for r in width_list:
             pixel_total = v_diff[r] * math.e ** v_intensity_diff[r]
             v_total.append(pixel_total)
+        v_total = sum(v_total)
         return v_total
     
-    def horizontal_total_sum(h_total):
-        # h_total = float
-        # for c in height_list:
-        #     for r in width_list:
-        #         h_total = h_total + h_total[c][r]
-        h_total_sum  = h_total
-        return h_total_sum
-
-    def vertical_total_sum(v_total, height_list, width_list):
-        v_total = float
-        for r in width_list:
-            for c in height_list:
-                v_total = v_total + v_total[c][r]
-        return v_total
-
     def loss_calc(self, h_total, v_total):
-        loss = sum(h_total + v_total)
+        # loss = sum(h_total + v_total)
+        loss = h_total + v_total
         return loss
 
     def calculate(self):
@@ -138,12 +123,11 @@ class Disparity_Smooth():
         v_intensity_diff = v_diff
         h_total = self.horizontal_term_x(h_diff, height_list, h_intensity_diff)
         v_total = self.vertical_term_y(v_diff, width_list, v_intensity_diff)
-        # horizontal_total_sum = self.horizontal_total_sum(h_total, height_list, width_list)
-        # vertical_total_sum = self.vertical_total_sum(v_total, height_list, width_list)
-        # loss = self.loss_calc(self, horizontal_total_sum, vertical_total_sum)
+        loss = self.loss_calc(h_total, v_total)
 
         # print(loss)
 
 if __name__ == "__main__":
     IMG_PATH='grayscale.png'
-    Disparity_Smooth(IMG_PATH).horizontal_total_sum(5, 5, 5)
+    loss = Disparity_Smooth(IMG_PATH).loss_calc(5, 10)
+    print(loss)
