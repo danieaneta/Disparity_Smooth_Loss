@@ -127,6 +127,6 @@ class Disparity_Smooth():
         return loss
 
 if __name__ == "__main__":
-    IMG_PATH='grayscale.png'
+    IMG_PATH='test_image.jpg'
     loss = Disparity_Smooth(IMG_PATH).calculate()
     print(loss)

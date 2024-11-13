@@ -6,7 +6,7 @@ import numpy
 
 print("----UNIT TEST START----")
 
-IMG_PATH='grayscale.png'
+IMG_PATH='test_image.jpg'
 
 #------------------------------
 #read_image
