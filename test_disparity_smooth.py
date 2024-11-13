@@ -201,4 +201,17 @@ def test_loss_calc():
 loss = Disparity_Smooth(IMG_PATH).loss_calc(h_total, v_total)
 print("LOSS: ", loss)
 
+#------------------------------
+#calculate
+#------------------------------
+def test_calculate_run():
+    Disparity_Smooth(IMG_PATH).calculate()
+    assert True
+
+def test_calcuate():
+    loss = Disparity_Smooth(IMG_PATH).calculate()
+    assert type(loss) == numpy.float64
+
+loss = Disparity_Smooth(IMG_PATH).calculate()
+print("LOSS: ", loss )
 print("----UNIT TEST END----")

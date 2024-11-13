@@ -106,7 +106,6 @@ class Disparity_Smooth():
         return v_total
     
     def loss_calc(self, h_total, v_total):
-        # loss = sum(h_total + v_total)
         loss = h_total + v_total
         return loss
 
@@ -125,9 +124,9 @@ class Disparity_Smooth():
         v_total = self.vertical_term_y(v_diff, width_list, v_intensity_diff)
         loss = self.loss_calc(h_total, v_total)
 
-        # print(loss)
+        return loss
 
 if __name__ == "__main__":
     IMG_PATH='grayscale.png'
-    loss = Disparity_Smooth(IMG_PATH).loss_calc(5, 10)
+    loss = Disparity_Smooth(IMG_PATH).calculate()
     print(loss)
