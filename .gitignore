@@ -3,3 +3,5 @@ test_white.png
 grayscale.png
 numpy_testing.py
 *.jpg
+*.txt
+*.png
