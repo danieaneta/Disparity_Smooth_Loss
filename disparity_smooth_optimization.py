@@ -124,7 +124,7 @@ class Disparity_Smooth():
         return v_total
     
     def loss_calc(self, h_total, v_total):
-        loss = h_total * v_total
+        loss = h_total + v_total
         return loss
 
     def calculate(self):

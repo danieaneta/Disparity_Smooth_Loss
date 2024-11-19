@@ -5,3 +5,7 @@ numpy_testing.py
 *.jpg
 *.txt
 *.png
+gpu_test.py
+numba_testing.py
+pytorch_testing.py
+claude_optim.py
