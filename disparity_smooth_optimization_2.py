@@ -11,7 +11,6 @@ from numba import jit
 import torch
 
 
-
 @dataclass
 class ImageData:
     height: int
@@ -38,12 +37,12 @@ class SolvedTerms:
 
 class Disparity_Smooth():
     def __init__(self, image_path):
-        self.image_path = image_path
+        self.image_data = self.read_image(image_path)
         self.timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
     
-    def read_image(self) -> ImageData:
+    def read_image(self, path) -> ImageData:
         try:
-            img = cv2.imread(self.image_path, cv2.IMREAD_GRAYSCALE)
+            img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
             height, width, height_list, width_list = img.shape[0], img.shape[1], range(img.shape[0]), range(img.shape[1])
             return ImageData(height=height, width=width, total_pixels=height * width, image=img, height_list=height_list, width_list=width_list)
         except Exception as e:
@@ -51,7 +50,8 @@ class Disparity_Smooth():
         
     @jit(forceobj=True, looplift=False)
     def end_point_arrays(self) -> EndPoints:
-        img_data = self.read_image()
+        img_data = self.image_data
+        #turn these lists into numpy arrays
         h_end_ar, v_end_ar = [], []
         
         for c in img_data.height_list:
@@ -70,7 +70,7 @@ class Disparity_Smooth():
 
     def difference(self) -> Diff:
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-        img_data = self.read_image()
+        img_data = self.image_data
         image_tensor = torch.from_numpy(img_data.image).float().to(device)
         end_points = self.end_point_arrays()
 
@@ -83,6 +83,7 @@ class Disparity_Smooth():
                     secondary_pixel_index = (c, r-1)
                 else:
                     secondary_pixel_index = (c, r+1)
+                #have diff as numpy.array or tensor.array
                 diff = abs(float(image_tensor[secondary_pixel_index] - float(image_tensor[main_pixel_index])))
                 h_diff.append(diff)
         
@@ -93,6 +94,7 @@ class Disparity_Smooth():
                     secondary_pixel_index = (c-1, r)
                 else:
                     secondary_pixel_index = (c+1, r)
+                #have diff as numpy.array or tensor.array
                 diff = abs(float(image_tensor[secondary_pixel_index] - float(image_tensor[main_pixel_index])))
                 v_diff.append(diff)
 
@@ -102,11 +104,12 @@ class Disparity_Smooth():
 
         return Diff(HDiff=h_diff, VDiff=v_diff)
     
-    @jit(forceobj=True, looplift=True)
+    # @jit(forceobj=True, looplift=True)
     def solving_terms(self) -> SolvedTerms:
-        img_data = self.read_image()
+        img_data = self.image_data
         diff = self.difference()
 
+        #turn these lists into numpy arrays or tensor arrays
         h_total, v_total = [], []
         for i in range(img_data.total_pixels):
             term_1h, term_1v = diff.HDiff[i], diff.VDiff[i] 
@@ -129,5 +132,8 @@ if __name__ == "__main__":
     IMG_PATH = "grayscale.png"
     # # IMG_PATH = "grayscale.png"
     # IMG_PATH = "test_depth_imgs/mi_140.png"
-    loss = Disparity_Smooth(IMG_PATH).loss_calc()
-    print(loss)
+
+    # loss = Disparity_Smooth(IMG_PATH).loss_calc()
+    # print(loss)
+    for i in tqdm(range(10)):
+        Disparity_Smooth(IMG_PATH).end_point_arrays()
