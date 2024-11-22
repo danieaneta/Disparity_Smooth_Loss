@@ -3,16 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import cv2
 from PIL import Image
-
-grayscale_matrix = np.array([
-    [50, 100, 150],
-    [200, 250, 25],
-    [75, 125, 175]
-], dtype=np.uint8)
-
-
-cv2.imwrite('grayscale.png', grayscale_matrix)
-image = cv2.imread('grayscale.png', cv2.IMREAD_GRAYSCALE)
+from tqdm import tqdm
 
 class Disparity_Smooth():
     def __init__(self, image_path):
@@ -30,7 +21,7 @@ class Disparity_Smooth():
     
     def create_index_matrix(self, height_list, width_list):
         matrix = []
-        for c in height_list:
+        for c in tqdm(height_list):
             for i in width_list:
                 matrix_key = [c, i]
                 matrix.append(matrix_key)
@@ -38,7 +29,7 @@ class Disparity_Smooth():
     
     def organize_matrix_lists(self, matrix, height_list, width): 
         matrix_master = []
-        for i in height_list:
+        for i in tqdm(height_list):
             d_list = matrix[0:width]
             matrix_master.append(d_list)
             for i in d_list:
@@ -47,14 +38,14 @@ class Disparity_Smooth():
     
     def h_end_pixel_list(self, matrix_master, height_list):
         h_end_list = []
-        for i in height_list:
+        for i in tqdm(height_list):
             end_point = matrix_master[i][-1]
             h_end_list.append(end_point)
         return h_end_list
 
     def horizontal_diff(self, img, matrix_master, height_list, width_list, h_end_point_list):
         h_diff = []
-        for c in height_list:
+        for c in tqdm(height_list):
             for r in width_list:
                 if matrix_master[c][r] in h_end_point_list:
                     secondary_index_h, secondary_index_v = matrix_master[c][r-1][0], matrix_master[c][r-1][1]
@@ -74,7 +65,7 @@ class Disparity_Smooth():
 
     def vertical_diff(self, img, matrix_master, height_list, width_list, v_end_point_list):
         v_diff = []
-        for r in width_list:
+        for r in tqdm(width_list):
             for c in height_list:
                 if matrix_master[c][r] in v_end_point_list:
                     secondary_index_h, secondary_index_v = matrix_master[c-1][r][0], matrix_master[c-1][r][1]
@@ -91,7 +82,7 @@ class Disparity_Smooth():
     def horizontal_term_x(self, h_diff, height_list, h_intensity_diff):
         #take h_diff(n,n) * e^-I(n,n)
         h_total = []
-        for c in height_list:
+        for c in tqdm(height_list):
             pixel_total = h_diff[c] * math.e ** h_intensity_diff[c]
             h_total.append(pixel_total)
         h_total = sum(h_total)
@@ -99,7 +90,7 @@ class Disparity_Smooth():
 
     def vertical_term_y(self, v_diff, width_list, v_intensity_diff):
         v_total = []
-        for r in width_list:
+        for r in tqdm(width_list):
             pixel_total = v_diff[r] * math.e ** v_intensity_diff[r]
             v_total.append(pixel_total)
         v_total = sum(v_total)
@@ -127,6 +118,6 @@ class Disparity_Smooth():
         return loss
 
 if __name__ == "__main__":
-    IMG_PATH='grayscale.png'
+    IMG_PATH='test_depth_imgs\mi_140.png'
     loss = Disparity_Smooth(IMG_PATH).calculate()
     print(loss)

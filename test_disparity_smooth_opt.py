@@ -1,7 +1,7 @@
 import math 
 import numpy
 import cv2 
-from disparity_smooth_optimization import Disparity_Smooth
+from v02_Logic_Testing import Disparity_Smooth
 
 IMG_PATH = 'grayscale.png'
  

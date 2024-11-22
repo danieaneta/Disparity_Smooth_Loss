@@ -1,4 +1,4 @@
-from disparity_smooth import Disparity_Smooth
+from v01_Logic_Testing import Disparity_Smooth
 import math 
 import cv2 
 import numpy 

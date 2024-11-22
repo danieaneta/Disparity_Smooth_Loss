@@ -46,7 +46,7 @@ class Disparity_Smooth():
 
 if __name__ == "__main__":
     # IMG_PATH = 'grayscale.png'
-    IMG_PATH = 'test_image_small_02.png'
+    IMG_PATH = 'test_depth_imgs\mi_140.png'
     disparity_model = Disparity_Smooth(IMG_PATH)
     loss = disparity_model.loss_calc()
     print("Loss:", loss)

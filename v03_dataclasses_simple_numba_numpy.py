@@ -51,7 +51,6 @@ class Disparity_Smooth():
     @jit(forceobj=True, looplift=False)
     def end_point_arrays(self) -> EndPoints:
         img_data = self.image_data
-        #turn these lists into numpy arrays
         h_end_ar, v_end_ar = [], []
         
         for c in img_data.height_list:
@@ -83,7 +82,6 @@ class Disparity_Smooth():
                     secondary_pixel_index = (c, r-1)
                 else:
                     secondary_pixel_index = (c, r+1)
-                #have diff as numpy.array or tensor.array
                 diff = abs(float(image_tensor[secondary_pixel_index] - float(image_tensor[main_pixel_index])))
                 h_diff.append(diff)
         
@@ -94,7 +92,6 @@ class Disparity_Smooth():
                     secondary_pixel_index = (c-1, r)
                 else:
                     secondary_pixel_index = (c+1, r)
-                #have diff as numpy.array or tensor.array
                 diff = abs(float(image_tensor[secondary_pixel_index] - float(image_tensor[main_pixel_index])))
                 v_diff.append(diff)
 
@@ -104,12 +101,10 @@ class Disparity_Smooth():
 
         return Diff(HDiff=h_diff, VDiff=v_diff)
     
-    # @jit(forceobj=True, looplift=True)
     def solving_terms(self) -> SolvedTerms:
         img_data = self.image_data
         diff = self.difference()
 
-        #turn these lists into numpy arrays or tensor arrays
         h_total, v_total = [], []
         for i in range(img_data.total_pixels):
             term_1h, term_1v = diff.HDiff[i], diff.VDiff[i] 
@@ -129,10 +124,7 @@ class Disparity_Smooth():
         return loss
 
 if __name__ == "__main__":
-    # IMG_PATH = "grayscale.png"
-    # # IMG_PATH = "grayscale.png"
-    # IMG_PATH = "test_depth_imgs/mi_140.png"
-    IMG_PATH = 'test_image_small.png'
+    IMG_PATH = 'test_depth_imgs\mi_140.png'
     loss = Disparity_Smooth(IMG_PATH).loss_calc()
     print(loss)
 

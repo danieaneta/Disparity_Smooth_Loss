@@ -3,10 +3,6 @@ import numpy as np
 import matplotlib.pyplot as plt 
 import cv2 
 from tqdm import tqdm
-from datetime import datetime 
-
-time = datetime.now()
-timestamp = time.strftime("%Y-%m-%d-%H-%M-%S")
 
 
 class Disparity_Smooth():
@@ -48,7 +44,6 @@ class Disparity_Smooth():
         for c in tqdm(height_list):
             for r in width_list:
                 main_pixel_index = (c, r)
-                # print("STARTING: ", main_pixel_index)
                 if any(np.array_equal(main_pixel_index, arr) for arr in h_end_points):
                     secondary_pixel_index = (c, (r-1))
                 else: 
@@ -120,9 +115,6 @@ class Disparity_Smooth():
 
 if __name__ == "__main__":
     # IMG_PATH = "grayscale.png"
-    # IMG_PATH = "grayscale.png"
-    # IMG_PATH = "test_depth_imgs/mi_140.png"
-    IMG_PATH = 'test_image_small_02.png'
-
+    IMG_PATH = "test_depth_imgs/mi_140.png"
     loss = Disparity_Smooth(IMG_PATH).calculate()
     print(loss)
