@@ -9,3 +9,6 @@ gpu_test.py
 numba_testing.py
 pytorch_testing.py
 claude_optim.py
+disparity_smooth_optimization_deep_learning.py
+numpy_image.py
+numpy_image.py

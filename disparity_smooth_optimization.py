@@ -59,8 +59,6 @@ class Disparity_Smooth():
                 h_diff.append(diff_np)
         h_diff_arr = np.empty(shape=len(h_diff), dtype=object)
         h_diff_arr[:] = h_diff
-        with open(f'logs/diff-logs/h_diff_log_{timestamp}.txt', "w") as file:
-            file.write(str(h_diff_arr))
 
         return h_diff_arr
     
@@ -80,9 +78,6 @@ class Disparity_Smooth():
         v_diff_arr = np.empty(shape=len(v_diff), dtype=object)
         v_diff_arr[:] = v_diff
 
-        with open(f'logs/diff-logs/v_diff_log_{timestamp}.txt', "w") as file:
-            file.write(str(v_diff_arr))
-
         return v_diff_arr
     
     def horizontal_term_x(self, h_diff, height_list, h_intensity_diff, total_pixels):
@@ -90,18 +85,9 @@ class Disparity_Smooth():
         for c in tqdm(range(total_pixels)):
             term_1 = h_diff[c]
             term_2 = math.e ** (-(abs(h_intensity_diff[c])))
-            h_pixel_diff_logs = f"T1: {term_1}, T2: {term_2}" + "\n"
-            h_pixel_pre_exp = f"T1: {term_1}, T2: {h_intensity_diff[c]}" + "\n"
-            with open(f"logs/term-logs/h_term_x_logs_{timestamp}.txt", "a") as file:
-                file.write(str(h_pixel_diff_logs))
-            with open(f"logs/term-logs/h_term_x_logs_pre_exp_{timestamp}.txt", "a") as file:
-                file.write(str(h_pixel_pre_exp))
             pixel_total = term_1 * term_2
             h_total.append(pixel_total)
         h_total = sum(h_total)
-        print("-------------------------")
-        print("H_Term: ", h_total)
-        print("-------------------------")
         return h_total
     
     def vertical_term_y(self, v_diff, width_list, v_intensity_diff, total_pixels):
@@ -109,18 +95,9 @@ class Disparity_Smooth():
         for r in tqdm(range(total_pixels)):
             term_1 = v_diff[r]
             term_2 = math.e ** (-(abs(v_intensity_diff[r])))
-            v_pixel_diff_logs = f"T1: {term_1}, T2: {term_2}" + "\n"
-            v_pixel_pre_exp = f"T1: {term_1}, T2: {v_intensity_diff[r]}" + "\n"
-            with open(f"logs/term-logs/v_term_x_logs_{timestamp}.txt", "a") as file:
-                file.write(str(v_pixel_diff_logs))
-            with open(f"logs/term-logs/v_term_x_logs_pre_exp_{timestamp}.txt", "a") as file:
-                file.write(str(v_pixel_pre_exp))
             pixel_total = term_1 * term_2
             v_total.append(pixel_total)
         v_total = sum(v_total)
-        print("-------------------------")
-        print("V_Term: ", v_total)
-        print("-------------------------")
         return v_total
     
     def loss_calc(self, h_total, v_total):
@@ -139,15 +116,13 @@ class Disparity_Smooth():
         h_total = self.horizontal_term_x(h_diff_arr, height_list, h_intensity_diff, total_pixels)
         v_total = self.vertical_term_y(v_diff_arr, width_list, v_intensity_diff, total_pixels)
         loss = self.loss_calc(h_total, v_total)
-        print("-------------------------")
-        print("LOSS: ", loss)
-        print("-------------------------")
-        # print(loss)
         return loss
 
 if __name__ == "__main__":
     # IMG_PATH = "grayscale.png"
     # IMG_PATH = "grayscale.png"
-    IMG_PATH = "test_depth_imgs/mi_140.png"
+    # IMG_PATH = "test_depth_imgs/mi_140.png"
+    IMG_PATH = 'test_image_small_02.png'
+
     loss = Disparity_Smooth(IMG_PATH).calculate()
     print(loss)
